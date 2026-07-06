@@ -1,8 +1,13 @@
 'use client';
 
 import * as React from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { ArrowRight } from 'lucide-react';
+import { signIn } from 'next-auth/react';
 import { GoogleButton } from './GoogleButton';
+import { AuthField } from './AuthField';
+import { signInSchema } from '@/lib/validations/auth';
 
 // ── Tally wordmark (inline so no network round-trip on the login page) ────────
 
@@ -66,70 +71,47 @@ function OrDivider() {
   );
 }
 
-// ── Email form field ──────────────────────────────────────────────────────────
-
-function Field({
-  label,
-  id,
-  type,
-  placeholder,
-  autoComplete,
-}: {
-  label: string;
-  id: string;
-  type: string;
-  placeholder: string;
-  autoComplete?: string;
-}) {
-  return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '12px' }}>
-      <label
-        htmlFor={id}
-        style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: 'var(--text-sm)',
-          fontWeight: 'var(--weight-medium)',
-          color: 'var(--fg-1)',
-        }}
-      >
-        {label}
-      </label>
-      <input
-        type={type}
-        id={id}
-        name={id}
-        placeholder={placeholder}
-        autoComplete={autoComplete}
-        style={{
-          padding: '11px 14px',
-          background: 'var(--surface-canvas)',
-          border: '1px solid var(--border-default)',
-          borderRadius: 'var(--radius-sm)',
-          fontFamily: 'var(--font-body)',
-          fontSize: 'var(--text-md)',
-          color: 'var(--fg-1)',
-          transition: [
-            'border-color var(--duration-micro) var(--ease-settle)',
-            'box-shadow var(--duration-micro) var(--ease-settle)',
-          ].join(', '),
-          outline: 'none',
-        }}
-        onFocus={(e) => {
-          e.currentTarget.style.borderColor = 'var(--accent)';
-          e.currentTarget.style.boxShadow = '0 0 0 3px rgba(31,77,63,0.12)';
-        }}
-        onBlur={(e) => {
-          e.currentTarget.style.borderColor = 'var(--border-default)';
-          e.currentTarget.style.boxShadow = 'none';
-        }}
-      />
-    </div>
-  );
-}
-
 // ── Main LoginCard ────────────────────────────────────────────────────────────
 
 export function LoginCard() {
+  const router = useRouter();
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
+  const [errors, setErrors] = React.useState<{ email?: string; password?: string }>({});
+  const [submitError, setSubmitError] = React.useState<string | null>(null);
+  const [loading, setLoading] = React.useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setSubmitError(null);
+
+    const parsed = signInSchema.safeParse({ email, password });
+    if (!parsed.success) {
+      const fieldErrors: { email?: string; password?: string } = {};
+      for (const issue of parsed.error.issues) {
+        const key = issue.path[0] as 'email' | 'password';
+        if (!fieldErrors[key]) fieldErrors[key] = issue.message;
+      }
+      setErrors(fieldErrors);
+      return;
+    }
+
+    setLoading(true);
+    const result = await signIn('credentials', {
+      email: parsed.data.email,
+      password: parsed.data.password,
+      redirect: false,
+    });
+    setLoading(false);
+
+    if (result?.error) {
+      setSubmitError('Invalid email or password');
+      return;
+    }
+
+    router.push('/dashboard');
+  }
+
   return (
     <div style={{ width: '100%', maxWidth: '360px' }}>
       {/* Logo */}
@@ -169,21 +151,40 @@ export function LoginCard() {
       <OrDivider />
 
       {/* Email / password form */}
-      <form onSubmit={(e) => e.preventDefault()}>
-        <Field
+      <form onSubmit={handleSubmit}>
+        <AuthField
           label="Email"
           id="email"
           type="email"
           placeholder="you@example.com"
           autoComplete="email"
+          value={email}
+          onChange={setEmail}
+          error={errors.email}
         />
-        <Field
+        <AuthField
           label="Password"
           id="password"
           type="password"
           placeholder="••••••••"
           autoComplete="current-password"
+          value={password}
+          onChange={setPassword}
+          error={errors.password}
         />
+
+        {submitError ? (
+          <p
+            style={{
+              margin: '0 0 12px',
+              fontFamily: 'var(--font-body)',
+              fontSize: 'var(--text-sm)',
+              color: 'var(--danger, #c0392b)',
+            }}
+          >
+            {submitError}
+          </p>
+        ) : null}
 
         <div
           style={{
@@ -207,17 +208,18 @@ export function LoginCard() {
 
         <button
           type="submit"
+          disabled={loading}
           style={{
             width: '100%',
             padding: '13px 20px',
-            background: 'var(--accent)',
+            background: loading ? 'var(--fg-3)' : 'var(--accent)',
             color: 'var(--fg-onAccent)',
             border: 'none',
             borderRadius: 'var(--radius-sm)',
             fontFamily: 'var(--font-body)',
             fontSize: 'var(--text-md)',
             fontWeight: 'var(--weight-medium)',
-            cursor: 'pointer',
+            cursor: loading ? 'not-allowed' : 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -240,7 +242,7 @@ export function LoginCard() {
             e.currentTarget.style.transform = 'scale(1)';
           }}
         >
-          Sign in
+          {loading ? 'Signing in…' : 'Sign in'}
           <ArrowRight size={14} strokeWidth={1.75} color="currentColor" />
         </button>
       </form>
@@ -286,9 +288,9 @@ export function LoginCard() {
         }}
       >
         No account yet?{' '}
-        <a href="#" style={{ color: 'var(--accent)', fontWeight: 'var(--weight-medium)' }}>
+        <Link href="/signup" style={{ color: 'var(--accent)', fontWeight: 'var(--weight-medium)' }}>
           Create one — it&apos;s free
-        </a>
+        </Link>
       </div>
     </div>
   );

@@ -4,7 +4,7 @@
 
 A personal finance web app that connects bank accounts via [Plaid](https://plaid.com), syncs transactions, and shows income, expenses, category breakdowns, and detected subscriptions — similar to the core analytics experience of Rocket Money.
 
-**Stack:** Next.js 14 · FastAPI · PostgreSQL · Plaid · Google OAuth
+**Stack:** Next.js 14 · Spring Boot 3 · PostgreSQL · Plaid · Google OAuth
 
 ---
 
@@ -26,7 +26,8 @@ AI chat and agent tooling are **not included in this repository** (see [`.gitign
 | Tool | Version |
 |------|---------|
 | Node.js | 20+ |
-| Python | 3.11+ |
+| Java | 21+ |
+| Maven | 3.9+ |
 | PostgreSQL | 14+ (local instance) |
 | npm or pnpm | latest |
 
@@ -41,7 +42,7 @@ AI chat and agent tooling are **not included in this repository** (see [`.gitign
 
 ```
 ├── apps/
-│   ├── api/          # FastAPI backend (port 8000)
+│   ├── api/          # Spring Boot backend (port 8000)
 │   └── web/          # Next.js frontend (port 3000)
 ├── packages/design/  # Shared CSS design tokens
 ├── preview/        # Design system HTML specimens
@@ -71,35 +72,44 @@ createdb tally
 
 ### 3. Backend (`apps/api`)
 
+Copy environment variables (Spring reads them from the shell or your IDE run config):
+
 ```bash
 cd apps/api
-python -m venv .venv
-
-# Windows
-.venv\Scripts\activate
-# macOS / Linux
-source .venv/bin/activate
-
-pip install -r requirements.txt
 cp .env.example .env
 ```
 
-Edit **`apps/api/.env`**:
+Edit **`apps/api/.env`** (export before running, or configure in your IDE):
 
 | Variable | Description |
 |----------|-------------|
-| `DATABASE_URL` | e.g. `postgresql+asyncpg://postgres:YOUR_PASSWORD@localhost:5432/tally` |
-| `JWT_SECRET` | `python -c "import secrets; print(secrets.token_hex(32))"` |
+| `DATABASE_URL` | `jdbc:postgresql://localhost:5432/tally` |
+| `DATABASE_USERNAME` / `DATABASE_PASSWORD` | Your local Postgres credentials |
+| `JWT_SECRET` | Random 64-char hex string |
 | `GOOGLE_CLIENT_ID` | From Google Cloud Console |
 | `PLAID_ENV` | `sandbox` for development |
 | `PLAID_CLIENT_ID` / `PLAID_SECRET` | From Plaid Dashboard |
-| `PLAID_TOKEN_ENCRYPTION_KEY` | `python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"` |
+| `PLAID_TOKEN_ENCRYPTION_KEY` | Fernet key (see `.env.example`) |
 | `ALLOWED_ORIGINS` | `http://localhost:3000` |
 
-Run migrations:
+Flyway migrations run automatically on startup (`src/main/resources/db/migration/`).
+
+**Windows (PowerShell):**
+
+```powershell
+cd apps/api
+Get-Content .env | ForEach-Object {
+  if ($_ -match '^\s*([^#][^=]+)=(.*)$') { Set-Item -Path "env:$($matches[1].Trim())" -Value $matches[2].Trim() }
+}
+mvn spring-boot:run
+```
+
+**macOS / Linux:**
 
 ```bash
-python -m alembic upgrade head
+cd apps/api
+set -a && source .env && set +a
+mvn spring-boot:run
 ```
 
 ### 4. Frontend (`apps/web`)
@@ -138,15 +148,15 @@ npm install
 
 Open two terminals.
 
-**Terminal 1 — API**
+**Terminal 1 — API (Spring Boot)**
 
 ```bash
 cd apps/api
-.venv\Scripts\activate          # or source .venv/bin/activate
-python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+# load .env as shown above, then:
+mvn spring-boot:run
 ```
 
-API docs (when `DEBUG=true`): http://localhost:8000/docs
+Health check: http://localhost:8000/health
 
 **Terminal 2 — Web**
 
@@ -195,7 +205,7 @@ If you prefer Docker instead of a local Postgres install:
 docker compose up -d postgres
 ```
 
-Default connection string: `postgresql+asyncpg://tally:tally_dev@localhost:5432/tally`
+Default JDBC URL: `jdbc:postgresql://localhost:5432/tally` (user/password per `docker-compose.yml`)
 
 ---
 
@@ -211,11 +221,21 @@ Brand rules: cream canvas (`#FAF7F2`), forest green accent (`#1F4D3F`), Instrume
 
 | Issue | Fix |
 |-------|-----|
-| `password authentication failed` | Set `DATABASE_URL` to match your local Postgres user/password |
+| `password authentication failed` | Set `DATABASE_USERNAME` / `DATABASE_PASSWORD` to match your local Postgres |
 | Plaid `503` / link token fails | Verify `PLAID_CLIENT_ID`, `PLAID_SECRET`, and `PLAID_ENV=sandbox` |
-| Google sign-in loops | Check `GOOGLE_CLIENT_ID` matches in both `.env` files; redirect URI must include `/api/auth/callback/google` |
+| Google sign-in loops | Check `GOOGLE_CLIENT_ID` matches in both env files; redirect URI must include `/api/auth/callback/google` |
 | Empty dashboard after linking | Click **Sync now** on Accounts; wait a few seconds and refresh |
 | `npm install` SSL error (Windows) | Run with `$env:NODE_OPTIONS="--use-system-ca"` |
+| `mvn` not found | Open a **new terminal** after install; `JAVA_HOME` and Maven should be on your user `PATH` |
+
+### Installed tooling (this machine)
+
+| Tool | Location |
+|------|----------|
+| Java 21 (Temurin) | `C:\Program Files\Eclipse Adoptium\jdk-21.0.11.10-hotspot` |
+| Maven 3.9.9 | `%USERPROFILE%\tools\apache-maven-3.9.9` |
+
+If Maven SSL fails on Windows, `apps/api/.mvn/jvm.config` sets `-Djavax.net.ssl.trustStoreType=Windows-ROOT`.
 
 ---
 

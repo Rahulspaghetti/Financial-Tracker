@@ -1,4 +1,5 @@
 import NextAuth from 'next-auth';
+import Credentials from 'next-auth/providers/credentials';
 import Google from 'next-auth/providers/google';
 import type { NextAuthConfig } from 'next-auth';
 
@@ -6,6 +7,51 @@ import type { NextAuthConfig } from 'next-auth';
 
 export const authConfig: NextAuthConfig = {
   providers: [
+    Credentials({
+      id: 'credentials',
+      name: 'Email',
+      credentials: {
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          return null;
+        }
+
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000';
+        const response = await fetch(`${apiUrl}/api/v1/auth/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: credentials.email,
+            password: credentials.password,
+          }),
+        });
+
+        if (!response.ok) {
+          return null;
+        }
+
+        const tokens = (await response.json()) as {
+          access_token: string;
+          refresh_token: string;
+          expires_in: number;
+        };
+
+        const userId = decodeJwtSub(tokens.access_token);
+        if (!userId) {
+          return null;
+        }
+
+        return {
+          id: userId,
+          accessToken: tokens.access_token,
+          refreshToken: tokens.refresh_token,
+          expiresAt: Date.now() + tokens.expires_in * 1000,
+        };
+      },
+    }),
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
@@ -31,9 +77,15 @@ export const authConfig: NextAuthConfig = {
   callbacks: {
     /**
      * Called after Google sign-in succeeds.
-     * Exchanges the Google id_token for Tally JWTs from the FastAPI backend.
+     * Exchanges the Google id_token for Tally JWTs from the Spring Boot backend.
      */
-    async jwt({ token, account }) {
+    async jwt({ token, account, user }) {
+      if (user && 'accessToken' in user && user.accessToken) {
+        token.accessToken = user.accessToken as string;
+        token.refreshToken = user.refreshToken as string;
+        token.expiresAt = user.expiresAt as number;
+      }
+
       // On initial sign-in, account contains the Google id_token
       if (account?.id_token) {
         try {
@@ -61,10 +113,11 @@ export const authConfig: NextAuthConfig = {
       }
 
       // Refresh access token when expired
+      const expiresAt = token.expiresAt;
       if (
         token.refreshToken &&
-        token.expiresAt &&
-        Date.now() > token.expiresAt - 60_000
+        typeof expiresAt === 'number' &&
+        Date.now() > expiresAt - 60_000
       ) {
         try {
           const apiUrl = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8000';
@@ -111,3 +164,14 @@ export const authConfig: NextAuthConfig = {
 };
 
 export const { handlers, auth, signIn, signOut } = NextAuth(authConfig);
+
+function decodeJwtSub(accessToken: string): string | null {
+  try {
+    const payload = JSON.parse(
+      Buffer.from(accessToken.split('.')[1] ?? '', 'base64url').toString('utf8'),
+    ) as { sub?: string };
+    return payload.sub ?? null;
+  } catch {
+    return null;
+  }
+}

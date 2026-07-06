@@ -1,28 +1,28 @@
 import type { Metadata, Viewport } from 'next';
-import { Geist, Geist_Mono, Instrument_Serif } from 'next/font/google';
+import { Inter, JetBrains_Mono, Lora } from 'next/font/google';
 import { AppProviders } from '@/components/providers/AppProviders';
 import '@/styles/globals.css';
 
 // ── Font loading (next/font handles font-display: swap automatically) ─────────
 
-const geist = Geist({
+const geist = Inter({
   variable: '--font-geist',
   subsets: ['latin'],
   display: 'swap',
   preload: true,
 });
 
-const geistMono = Geist_Mono({
+const geistMono = JetBrains_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
   display: 'swap',
   preload: false,
 });
 
-const instrumentSerif = Instrument_Serif({
+const instrumentSerif = Lora({
   variable: '--font-instrument-serif',
   subsets: ['latin'],
-  weight: '400',
+  weight: ['400', '500', '600', '700'],
   style: ['normal', 'italic'],
   display: 'swap',
   preload: false,

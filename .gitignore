@@ -14,38 +14,25 @@ dist/
 build/
 *.tsbuildinfo
 
-# ── Python ───────────────────────────────────────────────────────────────────
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-*.egg
-*.egg-info/
-dist/
-build/
-.eggs/
-.venv/
-venv/
-env/
-.Python
-pip-log.txt
-pip-delete-this-directory.txt
-.tox/
-.coverage
-.coverage.*
-htmlcov/
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
+# ── Java / Maven ─────────────────────────────────────────────────────────────
+target/
+.mvn/wrapper/maven-wrapper.jar
 
-# ── Environment files ─────────────────────────────────────────────────────────
+# ── Environment & credentials ─────────────────────────────────────────────────
 .env
+.env.*
+!.env.example
+!.env.local.example
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
 .env.production
-*.env
+*.pem
+*.key
+*.p12
+credentials.json
+**/secrets.*
 
 # ── Docker ───────────────────────────────────────────────────────────────────
 # keep docker-compose.yml tracked; ignore generated volumes
@@ -81,12 +68,14 @@ pnpm-debug.log*
 .turbo
 coverage/
 
-# ── AI / agent tooling (local only — not shipped) ─────────────────────────────
+# ── AI / Claude / Cursor (local agent tooling — not shipped) ───────────────────
 .claude/
+.cursor/
+agent-transcripts/
 SKILL.md
 SESSION_LOG.md
-apps/api/app/api/v1/ai/
-apps/api/app/services/ai_service.py
+AGENTS.md
+CLAUDE.md
 apps/web/src/lib/hooks/useChat.ts
-ui_kits/mobile/ChatScreen.jsx
-preview/components-ai-chat.html
+preview/
+ui_kits/

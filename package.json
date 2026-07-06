@@ -4,7 +4,8 @@
   "version": "0.1.0",
   "scripts": {
     "dev:web": "pnpm --filter @tally/web dev",
-    "dev:api": "pnpm --filter @tally/api dev",
+    "dev:api": "cd apps/api && mvn spring-boot:run",
+    "build:api": "cd apps/api && mvn -q package -DskipTests",
     "build:web": "pnpm --filter @tally/web build",
     "lint": "pnpm --filter @tally/web lint",
     "type-check": "pnpm --filter @tally/web type-check",

@@ -1,7 +1,7 @@
 // ============================================================================
 // Tally — Domain types
 // These are the canonical shapes used throughout the frontend.
-// Keep in sync with FastAPI Pydantic schemas in apps/api/.
+// Keep in sync with Spring Boot API DTOs in apps/api/.
 // ============================================================================
 
 // ── User ─────────────────────────────────────────────────────────────────────

@@ -1,6 +1,6 @@
 // ============================================================================
 // Tally — API response wrapper types
-// These wrap raw domain types as returned by the FastAPI backend.
+// These wrap raw domain types as returned by the Spring Boot backend.
 // ============================================================================
 
 // ── Generic wrappers ─────────────────────────────────────────────────────────
@@ -21,7 +21,7 @@ export interface PaginatedResponse<T> {
   hasNextPage: boolean;
 }
 
-/** Standard error envelope (matches FastAPI HTTPException detail shape) */
+/** Standard error envelope (matches Spring Boot API error shape) */
 export interface ApiError {
   detail: string | ApiErrorDetail[];
   status?: number;
