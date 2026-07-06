@@ -1,0 +1,24 @@
+<!doctype html>
+<html><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  body { margin: 0; padding: 22px 28px; background: var(--surface-canvas); }
+  .header { font-family: var(--font-body); font-size: 11px; color: var(--fg-3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 14px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 28px; }
+  .row { display: flex; align-items: baseline; justify-content: space-between; padding-bottom: 8px; border-bottom: 1px solid var(--border-subtle); }
+  .label { font-family: var(--font-body); font-size: 13px; color: var(--fg-2); }
+  .num { font-family: var(--font-mono); font-feature-settings: 'tnum' 1; font-weight: 500; font-size: 15px; color: var(--fg-1); }
+  .pos { color: var(--positive); }
+  .neg { color: var(--negative); }
+</style></head>
+<body>
+  <div class="header">Numeric · Geist Mono · tabular figures</div>
+  <div class="grid">
+    <div class="row"><span class="label">Whole Foods</span><span class="num neg">−$84.21</span></div>
+    <div class="row"><span class="label">Paycheck · ACH</span><span class="num pos">+$3,420.00</span></div>
+    <div class="row"><span class="label">Spotify</span><span class="num neg">−$10.99</span></div>
+    <div class="row"><span class="label">Refund · Amazon</span><span class="num pos">+$24.50</span></div>
+    <div class="row"><span class="label">Rent · May</span><span class="num neg">−$2,150.00</span></div>
+    <div class="row"><span class="label">Interest</span><span class="num pos">+$0.43</span></div>
+  </div>
+</body></html>

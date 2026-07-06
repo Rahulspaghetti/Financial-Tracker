@@ -1,0 +1,92 @@
+# ── Node / pnpm ──────────────────────────────────────────────────────────────
+node_modules/
+.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# ── Next.js ──────────────────────────────────────────────────────────────────
+.next/
+out/
+next-env.d.ts
+
+# ── Build outputs ─────────────────────────────────────────────────────────────
+dist/
+build/
+*.tsbuildinfo
+
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.venv/
+venv/
+env/
+.Python
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# ── Environment files ─────────────────────────────────────────────────────────
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.production
+*.env
+
+# ── Docker ───────────────────────────────────────────────────────────────────
+# keep docker-compose.yml tracked; ignore generated volumes
+pgdata/
+
+# ── OS ───────────────────────────────────────────────────────────────────────
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# ── IDE ──────────────────────────────────────────────────────────────────────
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# ── Misc ─────────────────────────────────────────────────────────────────────
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.vercel
+.turbo
+coverage/
+
+# ── AI / agent tooling (local only — not shipped) ─────────────────────────────
+.claude/
+SKILL.md
+SESSION_LOG.md
+apps/api/app/api/v1/ai/
+apps/api/app/services/ai_service.py
+apps/web/src/lib/hooks/useChat.ts
+ui_kits/mobile/ChatScreen.jsx
+preview/components-ai-chat.html

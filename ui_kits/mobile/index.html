@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Tally · Mobile UI Kit</title>
+<link rel="stylesheet" href="../../colors_and_type.css"/>
+<style>
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--surface-canvas);
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 24px 24px 12px;
+    background-image: radial-gradient(1200px 600px at 50% -10%, rgba(31,77,63,0.05), transparent 60%);
+    overflow: hidden;
+  }
+  .stage { flex: 1; display: flex; align-items: center; justify-content: center; width: 100%; min-height: 0; }
+  .label { font-family: var(--font-body); font-size: 11px; color: var(--fg-3); letter-spacing: 0.08em; text-transform: uppercase; text-align: center; margin-top: 10px; }
+  .device-wrap { display: flex; flex-direction: column; align-items: center; height: 100%; min-height: 0; }
+  .device-scale { flex: 1; min-height: 0; display: flex; align-items: center; justify-content: center; }
+  .footer-note { font-family: var(--font-body); font-size: 12px; color: var(--fg-3); margin-top: 14px; max-width: 520px; text-align: center; line-height: 1.5; flex-shrink: 0; }
+</style>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+
+<div class="stage" id="root"></div>
+
+<div class="footer-note">
+  Click around — connect a bank, scroll the dashboard, ask Tally a question.<br/>
+  Try: <em>"How much did I spend on coffee last month?"</em> or <em>"Recurring subscriptions"</em>
+</div>
+
+<script type="text/babel" src="ios-frame.jsx"></script>
+<script type="text/babel" src="Icon.jsx"></script>
+<script type="text/babel" src="TallyKit.jsx"></script>
+<script type="text/babel" src="LoginScreen.jsx"></script>
+<script type="text/babel" src="HomeScreen.jsx"></script>
+<script type="text/babel" src="ChatScreen.jsx"></script>
+<script type="text/babel" src="TransactionDetail.jsx"></script>
+
+<script type="text/babel">
+function App() {
+  const [route, setRoute] = React.useState('login');
+  const [tab, setTab] = React.useState('home');
+  const [tx, setTx] = React.useState(null);
+  const [scale, setScale] = React.useState(1);
+  const wrapRef = React.useRef();
+
+  const DEVICE_W = 390;
+  const DEVICE_H = 820;
+
+  React.useEffect(() => {
+    const fit = () => {
+      const el = wrapRef.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      const s = Math.min(r.width / DEVICE_W, r.height / DEVICE_H, 1.4);
+      setScale(s);
+    };
+    fit();
+    window.addEventListener('resize', fit);
+    return () => window.removeEventListener('resize', fit);
+  }, []);
+
+  const goHome = () => { setRoute('home'); setTab('home'); };
+
+  return (
+    <div className="device-wrap">
+      <div className="device-scale" ref={wrapRef}>
+        <div style={{ width: DEVICE_W, height: DEVICE_H, transform: `scale(${scale})`, transformOrigin: 'center center' }}>
+          <IOSDevice width={DEVICE_W} height={DEVICE_H}>
+            {route === 'login' && <LoginScreen onLogin={goHome}/>}
+            {route === 'home'  && (
+              <HomeScreen
+                onOpenChat={() => { setRoute('chat'); setTab('chat'); }}
+                onOpenTransaction={(t) => { setTx(t); setRoute('tx'); }}
+              />
+            )}
+            {route === 'chat'  && <ChatScreen onClose={goHome}/>}
+            {route === 'tx'    && <TransactionDetail tx={tx} onClose={goHome}/>}
+            {route !== 'login' && (
+              <BottomTabBar active={tab} onChange={(id) => {
+                setTab(id);
+                if (id === 'chat') setRoute('chat');
+                else setRoute('home');
+              }}/>
+            )}
+          </IOSDevice>
+        </div>
+      </div>
+      <div className="label">{route === 'login' ? 'Onboarding' : route === 'chat' ? 'AI chat' : route === 'tx' ? 'Transaction detail' : 'Home · spending'}</div>
+    </div>
+  );
+}
+
+const tryMount = () => {
+  if (!window.IOSDevice || !window.LoginScreen) return setTimeout(tryMount, 30);
+  ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+};
+tryMount();
+</script>
+</body></html>

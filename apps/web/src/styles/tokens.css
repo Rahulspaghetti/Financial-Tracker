@@ -1,0 +1,6 @@
+/*
+  Tally design tokens — local re-export.
+  The canonical source is packages/design/tokens.css.
+  This file imports it so Next.js can resolve it via the local styles layer.
+*/
+@import '@tally/design/tokens.css';

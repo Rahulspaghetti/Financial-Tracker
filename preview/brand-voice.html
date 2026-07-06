@@ -1,0 +1,25 @@
+<!doctype html>
+<html><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  body { margin: 0; padding: 22px 28px; background: var(--surface-canvas); display: flex; flex-direction: column; gap: 14px; }
+  .h { font-family: var(--font-body); font-size: 11px; color: var(--fg-3); letter-spacing: 0.08em; text-transform: uppercase; }
+  .row { display: flex; flex-direction: column; gap: 6px; }
+  .ex { font-family: var(--font-body); font-size: 14px; line-height: 1.5; padding: 10px 12px; border-radius: 8px; }
+  .yes { background: var(--positive-soft); color: #2E5538; border-left: 3px solid var(--positive); }
+  .no  { background: var(--negative-soft); color: #7A2E22; border-left: 3px solid var(--negative); text-decoration: line-through; text-decoration-color: rgba(122,46,34,0.4); }
+  .check::before { content: '✓ '; font-weight: 600; text-decoration: none; display: inline-block; }
+  .x::before { content: '✗ '; font-weight: 600; text-decoration: none; display: inline-block; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px; }
+</style></head>
+<body>
+  <div class="h">Voice — yes vs no</div>
+  <div class="grid">
+    <div class="ex yes"><span class="check">No transactions yet. Connect an account to get started.</span></div>
+    <div class="ex no"><span class="x">Looks pretty empty in here! 👀</span></div>
+    <div class="ex yes"><span class="check">Account connected. We'll start importing transactions.</span></div>
+    <div class="ex no"><span class="x">Awesome! You're all set! 🎉</span></div>
+    <div class="ex yes"><span class="check">You spent $1,284 on dining in April — about 22% more than March.</span></div>
+    <div class="ex no"><span class="x">Looks like you're a foodie this month! 🍝 Reel it in!</span></div>
+  </div>
+</body></html>

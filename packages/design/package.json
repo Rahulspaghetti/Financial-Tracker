@@ -1,0 +1,15 @@
+{
+  "name": "@tally/design",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Tally design tokens and static assets",
+  "main": "tokens.css",
+  "files": [
+    "tokens.css",
+    "assets/"
+  ],
+  "exports": {
+    "./tokens.css": "./tokens.css",
+    "./assets/*": "./assets/*"
+  }
+}

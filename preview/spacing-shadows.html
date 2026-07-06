@@ -1,0 +1,19 @@
+<!doctype html>
+<html><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  body { margin: 0; padding: 28px; background: var(--surface-canvas); display: flex; gap: 22px; align-items: flex-start; }
+  .card { background: var(--surface-raised); border: 1px solid var(--border-subtle); border-radius: 16px; width: 150px; height: 96px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; }
+  .name { font-family: var(--font-body); font-size: 12px; font-weight: 500; color: var(--fg-1); }
+  .desc { font-family: var(--font-mono); font-size: 10px; color: var(--fg-3); line-height: 1.4; }
+  .sm  { box-shadow: 0 1px 2px rgba(20,23,26,0.04), 0 1px 1px rgba(20,23,26,0.03); }
+  .md  { box-shadow: 0 2px 6px rgba(20,23,26,0.05), 0 1px 2px rgba(20,23,26,0.03); }
+  .lg  { box-shadow: 0 8px 24px rgba(20,23,26,0.08), 0 2px 6px rgba(20,23,26,0.04); }
+  .xl  { box-shadow: 0 24px 48px rgba(20,23,26,0.12), 0 8px 16px rgba(20,23,26,0.06); }
+</style></head>
+<body>
+  <div class="card sm"><span class="name">shadow-sm</span><span class="desc">flat cards on cream</span></div>
+  <div class="card md"><span class="name">shadow-md</span><span class="desc">hovered list rows</span></div>
+  <div class="card lg"><span class="name">shadow-lg</span><span class="desc">modals · AI chat panel</span></div>
+  <div class="card xl"><span class="name">shadow-xl</span><span class="desc">command palette · sheets</span></div>
+</body></html>

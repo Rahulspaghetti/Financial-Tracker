@@ -1,0 +1,42 @@
+<!doctype html>
+<html><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  body { margin: 0; padding: 24px 28px; background: var(--surface-canvas); display: grid; grid-template-columns: 1fr 1fr; gap: 18px 24px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  label { font-family: var(--font-body); font-size: 12px; font-weight: 500; color: var(--fg-1); }
+  .input { font-family: var(--font-body); font-size: 14px; padding: 11px 14px; border-radius: 8px; border: 1px solid var(--border-default); background: var(--surface-raised); color: var(--fg-1); }
+  .input::placeholder { color: var(--fg-3); }
+  .input.focused { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(31,77,63,0.16); outline: none; }
+  .input.error { border-color: var(--negative); box-shadow: 0 0 0 3px rgba(177,75,58,0.14); }
+  .help { font-family: var(--font-body); font-size: 12px; color: var(--fg-3); }
+  .help.err { color: var(--negative); }
+  .input-amount { font-family: var(--font-mono); font-size: 18px; padding: 14px 16px; }
+  .with-prefix { position: relative; }
+  .with-prefix .pfx { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); font-family: var(--font-mono); color: var(--fg-3); font-size: 18px; }
+  .with-prefix .input-amount { padding-left: 30px; }
+</style></head>
+<body>
+  <div class="field">
+    <label>Email</label>
+    <input class="input" type="text" value="emily@example.com"/>
+    <span class="help">We'll never share this.</span>
+  </div>
+  <div class="field">
+    <label>Account nickname</label>
+    <input class="input focused" type="text" placeholder="e.g. Chase Checking"/>
+    <span class="help">Focused state · 2px ring</span>
+  </div>
+  <div class="field">
+    <label>Monthly budget</label>
+    <div class="with-prefix">
+      <span class="pfx">$</span>
+      <input class="input input-amount" type="text" value="3,200"/>
+    </div>
+  </div>
+  <div class="field">
+    <label>Routing number</label>
+    <input class="input error" type="text" value="0211"/>
+    <span class="help err">Routing numbers are 9 digits.</span>
+  </div>
+</body></html>

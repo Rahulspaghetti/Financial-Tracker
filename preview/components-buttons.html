@@ -1,0 +1,38 @@
+<!doctype html>
+<html><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  body { margin: 0; padding: 24px 28px; background: var(--surface-canvas); display: flex; flex-direction: column; gap: 14px; }
+  .row { display: flex; gap: 10px; align-items: center; }
+  .h { font-family: var(--font-body); font-size: 11px; color: var(--fg-3); letter-spacing: 0.08em; text-transform: uppercase; min-width: 92px; }
+  button { font-family: var(--font-body); font-size: 14px; font-weight: 500; line-height: 1; cursor: pointer; transition: all 200ms cubic-bezier(0.32,0.72,0,1); }
+  .btn { padding: 11px 18px; border-radius: 8px; border: 1px solid transparent; }
+  .primary { background: var(--accent); color: var(--fg-onAccent); }
+  .secondary { background: var(--surface-raised); color: var(--fg-1); border-color: var(--border-default); }
+  .ghost { background: transparent; color: var(--fg-1); border-color: transparent; }
+  .destructive { background: var(--negative); color: var(--fg-onAccent); }
+  .pill { padding: 8px 14px; border-radius: 9999px; font-size: 13px; }
+  .pill-soft { background: var(--accent-soft); color: var(--accent-ink); border: 1px solid transparent; }
+  .pill-ghost { background: transparent; color: var(--fg-1); border: 1px solid var(--border-default); }
+  .icon { width: 16px; height: 16px; vertical-align: -3px; margin-right: 6px; }
+</style></head>
+<body>
+  <div class="row">
+    <span class="h">Primary</span>
+    <button class="btn primary">See your spending</button>
+    <button class="btn primary"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Continue</button>
+    <button class="btn primary" disabled style="opacity:.4; cursor:not-allowed;">Disabled</button>
+  </div>
+  <div class="row">
+    <span class="h">Secondary</span>
+    <button class="btn secondary">Cancel</button>
+    <button class="btn ghost">Skip for now</button>
+    <button class="btn destructive">Disconnect account</button>
+  </div>
+  <div class="row">
+    <span class="h">Pill / chip</span>
+    <button class="btn pill pill-soft">Dining · $312</button>
+    <button class="btn pill pill-ghost">All categories</button>
+    <button class="btn pill pill-ghost"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M6 12h12M10 18h4"/></svg>Filter</button>
+  </div>
+</body></html>

@@ -1,0 +1,25 @@
+<!doctype html>
+<html><head><meta charset="utf-8"/>
+<link rel="stylesheet" href="../colors_and_type.css"/>
+<style>
+  body { margin: 0; padding: 24px 28px; background: var(--surface-canvas); display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .badge { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 9999px; font-family: var(--font-body); font-size: 12px; font-weight: 500; line-height: 1; }
+  .dot { width: 6px; height: 6px; border-radius: 9999px; background: currentColor; }
+  .pos { background: var(--positive-soft); color: #2E5538; }
+  .neg { background: var(--negative-soft); color: #7A2E22; }
+  .cau { background: var(--caution-soft); color: #5C4318; }
+  .inf { background: var(--info-soft); color: #1F324A; }
+  .acc { background: var(--accent-soft); color: var(--accent-ink); }
+  .nrm { background: var(--ink-100); color: var(--ink-700); }
+</style></head>
+<body>
+  <span class="badge pos"><span class="dot"></span>Connected</span>
+  <span class="badge cau"><span class="dot"></span>Pending</span>
+  <span class="badge neg"><span class="dot"></span>Failed sync</span>
+  <span class="badge inf"><span class="dot"></span>New rule</span>
+  <span class="badge acc">AI · analyzed</span>
+  <span class="badge acc">Recurring</span>
+  <span class="badge nrm">Cash</span>
+  <span class="badge nrm">Credit · Visa</span>
+  <span class="badge nrm">Chase ·· 4421</span>
+</body></html>
